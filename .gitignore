@@ -67,8 +67,8 @@ svg-inkscape/
 
 # Exceptions #
 ##############
-!Documentation/
-!Image/
-!HQ/
-!Data/
+!Documentation/*
+!Image/*
+!HQ/*
+!Data/*
 !Report.pdf
