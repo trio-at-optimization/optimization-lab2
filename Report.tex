@@ -25,7 +25,7 @@
 
 \renewcommand{\figurename}{}
 \addto\captionsrussian{\renewcommand{\figurename}{}}
-\captionsetup[table]{labelformat=empty}
+\captionsetup[table]{labelformat = empty}
 
 \hypersetup{
 	colorlinks,
@@ -37,7 +37,7 @@
 
 \lstset{
 	mathescape,
-	backgroundcolor = \color{backcolour},   
+	backgroundcolor = \color{backcolour},
 	commentstyle = \color{codegreen},
 	keywordstyle = \color{magenta},
 	numberstyle = \tiny\color{codegray},
@@ -86,11 +86,23 @@
 	\hfill\begin{minipage}{\hdwidth}\hd\end{minipage}
 	\endgroup
 	\newpage
-	\section*{Привет, мир!}
-	Проверка \url{https://ru.overleaf.com/learn/latex/Code_listing} на \textit{Hello, world} программу.
-	\begin{lstlisting}[language=python]
-function $main$:
-	$x \gets$"Hello, world!"
-	print($x$)
-	\end{lstlisting}
+	\section*{Стохастический градиентный спуск}
+	\subsection*{Исследование с разными размерами батча}
+	\subsection*{Learning rate scheduling}
+	\subsection*{Исследование различных модификаций}
+	\subsubsection*{Nesterov}
+	\subsubsection*{Momentum}
+	\subsubsection*{AdaGrad}
+	\subsubsection*{RMSProp}
+	\subsubsection*{Adam}
+	\subsubsection*{Сравнение модификаций}
+	\paragraph{Сходимость}
+	\paragraph{Траектории}
+	\newpage
+	\section*{Полиномиальная регрессия}
+	\subsection*{Введение}
+	\subsection*{Исследование различных модификация}
+	\subsubsection*{L1}
+	\subsubsection*{L2}
+	\subsubsection*{Elastic регуляризация}
 \end{document}
