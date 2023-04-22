@@ -53,6 +53,7 @@ Thumbs.db
 *.fdb_latexmk
 *.fls
 *.xtr
+*.listing
 *.synctex.gz
 *.synctex*
 _minted-*/
