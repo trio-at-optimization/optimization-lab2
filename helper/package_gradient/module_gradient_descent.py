@@ -8,7 +8,7 @@ import numpy as np
 # =================================================================================================== #
 # Градиентный спуск
 
-def gradient_descent(f, x0, lr_search_func, num_iterations=1000, eps=1e-6, step_size=1, minimum=0, apply_min=False):
+def gradient_descent(f, x0, lr_search_func, num_iterations=1000, eps=1e-6, step_size=1, minimum=0.0, apply_min=False):
     """
     Функция вычисления градиентного спуска с заданной функцией поиска коэффициента обучения
 

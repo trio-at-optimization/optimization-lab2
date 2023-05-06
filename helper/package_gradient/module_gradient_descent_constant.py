@@ -4,7 +4,7 @@ from .module_gradient_descent import gradient_descent
 # ==================================================================================================================== #
 # Градиентный спуск
 
-def gradient_descent_constant(f, x0, lr=0.01, num_iterations=1000, minimum=0, apply_min=False):
+def gradient_descent_constant(f, x0, lr=0.01, eps=1e-6, num_iterations=1000, minimum=0, apply_min=False):
     """
     Градиентный спуск с постоянным шагом.
 
@@ -21,6 +21,6 @@ def gradient_descent_constant(f, x0, lr=0.01, num_iterations=1000, minimum=0, ap
     def const_lr(*ignored):
         return lr
 
-    return gradient_descent(f, x0, const_lr, num_iterations, minimum=minimum, apply_min=apply_min)
+    return gradient_descent(f, x0, const_lr, num_iterations, eps, minimum=minimum, apply_min=apply_min)
 
 # ==================================================================================================================== #
