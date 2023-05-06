@@ -73,3 +73,8 @@ svg-inkscape/
 !HQ/*
 !Data/*
 !Report.pdf
+
+*__pycache__
+*.idea
+*.trash
+*Test*.ipynb
