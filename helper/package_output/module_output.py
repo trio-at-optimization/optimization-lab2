@@ -62,3 +62,13 @@ def save_result(f, list_result, list_label, filepath='', sp='%g', fields=None, g
         save_result_table(f, list_result[i], filepath + list_label[i] + '.csv', sp, fields, generate_fields)
 
 # ==================================================================================================================== #
+
+
+def print_loss(loss_history, loss_real, labels):
+    for i in range(len(loss_history)):
+        print("Значение функции потерь:")
+        print(f"real = {loss_real[i]}")
+        print(f"{labels[i]} = {loss_history[i][-1]}")
+        print(f"diff {labels[i]} - real = {loss_history[i][-1] - loss_real[i]}\n")
+
+# ==================================================================================================================== #

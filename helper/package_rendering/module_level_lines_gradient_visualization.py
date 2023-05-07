@@ -26,14 +26,14 @@ plt.style.use('fivethirtyeight')
 # ==================================================================================================================== #
 # Визуализация линий уровня градиентов
 
-def print_lines_grad(file_info, list_result, list_label, title='Градиентный спуск на уровнях функции', filename='',
+def print_lines_grad(file_info_3d, list_result, list_label, title='Градиентный спуск на уровнях функции', filename='',
                      filename_extension='.png', dpi=1024):
     fig = plt.figure(figsize=(10, 10))
     ax = fig.add_subplot(111)
 
     for i in range(len(list_result)):
-        levels = np.unique(sorted([file_info.f(p) for p in list_result[i]]))
-        ax.contour(file_info.X, file_info.Y, file_info.Z, levels=levels, colors='red', antialiased=True, linewidths=1.0)
+        levels = np.unique(sorted([file_info_3d.f(p) for p in list_result[i]]))
+        ax.contour(file_info_3d.X, file_info_3d.Y, file_info_3d.Z, levels=levels, colors='red', antialiased=True, linewidths=1.0)
 
     for i in range(len(list_result)):
         x = list_result[i][:, 0]
@@ -41,7 +41,7 @@ def print_lines_grad(file_info, list_result, list_label, title='Градиент
         ax.plot(x, y, marker='.', markersize=10, markerfacecolor='black', label=list_label[i], linewidth=2)
         print(
             f'{list_label[i]:15} ==> '
-            f'{file_info.f(list_result[i][-1]):10f} in [{list_result[i][-1][0]:10f}, {list_result[i][-1][1]:10f}]')
+            f'{file_info_3d.f(list_result[i][-1]):10f} in [{list_result[i][-1][0]:10f}, {list_result[i][-1][1]:10f}]')
 
     # Добавление заголовка и подписей осей
     if title != '':
@@ -60,7 +60,7 @@ def print_lines_grad(file_info, list_result, list_label, title='Градиент
 # ==================================================================================================================== #
 # Анимированная визуализация линий уровня градиентов
 
-def print_lines_grad_animated(file_info, list_result, list_label, interval=100, frames=-1):
+def print_lines_grad_animated(file_info_3d, list_result, list_label, interval=100, frames=-1):
     fig = plt.figure(figsize=(7, 7))
     ax = fig.add_subplot(111)
 
@@ -68,8 +68,8 @@ def print_lines_grad_animated(file_info, list_result, list_label, interval=100, 
         ax.clear()
 
         for i in range(len(list_result)):
-            levels = np.unique(np.sort(file_info.f(list_result[i][:frames].T)))
-            ax.contour(file_info.X, file_info.Y, file_info.Z, levels, colors='red', antialiased=True, linewidths=1.0)
+            levels = np.unique(np.sort(file_info_3d.f(list_result[i][:frames].T)))
+            ax.contour(file_info_3d.X, file_info_3d.Y, file_info_3d.Z, levels, colors='red', antialiased=True, linewidths=1.0)
 
         for i in range(len(list_result)):
             x = list_result[i][:w, 0]

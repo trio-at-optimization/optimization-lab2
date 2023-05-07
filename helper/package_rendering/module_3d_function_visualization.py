@@ -26,7 +26,7 @@ plt.style.use('fivethirtyeight')
 # =================================================================================================== #
 # 3D визуализация функции
 
-def print_f(file_info, elev=30, azim=60):
+def print_f(file_info_3d, elev=30, azim=60):
     # Создание фигуры и трехмерной оси
     fig = plt.figure(figsize=(10, 10))
     ax = fig.add_subplot(111, projection='3d')
@@ -35,10 +35,10 @@ def print_f(file_info, elev=30, azim=60):
     ax.view_init(elev=elev, azim=azim)
 
     # Построение поверхности
-    ax.plot_surface(file_info.X, file_info.Y, file_info.Z)
+    ax.plot_surface(file_info_3d.X, file_info_3d.Y, file_info_3d.Z)
 
     # Построение начальной точки
-    ax.plot(file_info.x0[0], file_info.x0[1], file_info.f(file_info.x0), 'ro', label='Начальная точка')
+    ax.plot(file_info_3d.x0[0], file_info_3d.x0[1], file_info_3d.f(file_info_3d.x0), 'ro', label='Начальная точка')
 
     # Установка отступа между графиком и значениями осей
     ax.tick_params(pad=10)
@@ -65,7 +65,7 @@ def print_f(file_info, elev=30, azim=60):
 # =================================================================================================== #
 # 3D анимированная визуализация функции
 
-def print_f_animated(file_info, interval=100, elev=30, st_azim=80, delta=5):
+def print_f_animated(file_info_3d, interval=100, elev=30, st_azim=80, delta=5):
     # plt.title('График функции с начальной точкой')
     fig = plt.figure(figsize=(7, 7))
     ax = plt.axes(projection='3d')
@@ -78,11 +78,11 @@ def print_f_animated(file_info, interval=100, elev=30, st_azim=80, delta=5):
         ax.view_init(elev=elev, azim=azim)
 
         # Построение поверхности
-        ax.plot_surface(file_info.X, file_info.Y, file_info.Z)
+        ax.plot_surface(file_info_3d.X, file_info_3d.Y, file_info_3d.Z)
 
         # Построение начальной точки
         label = 'elev=' + str(elev) + ', azim=' + str(azim)
-        ax.plot(file_info.x0[0], file_info.x0[1], file_info.f(file_info.x0), 'ro', markersize=3, label=label)
+        ax.plot(file_info_3d.x0[0], file_info_3d.x0[1], file_info_3d.f(file_info_3d.x0), 'ro', markersize=3, label=label)
 
         # Установка отступа между графиком и значениями осей
         ax.tick_params(pad=10)
