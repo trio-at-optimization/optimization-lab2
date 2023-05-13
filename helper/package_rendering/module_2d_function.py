@@ -44,7 +44,7 @@ def print_2d_data(file_info_2d_data, results, lables, show_print=False, title=''
 # ==================================================================================================================== #
 
 
-def print_2d_function(results, labels):
+def print_loss_history(results, labels):
     for i in range(len(results)):
         plt.plot(results[i], label=labels[i])
     plt.legend()
