@@ -4,7 +4,7 @@
 \usepackage[T2A]{fontenc}
 \usepackage[utf8]{inputenc}
 \usepackage[english, russian]{babel}
-\usepackage{xcolor, ulem, soulutf8, soul, fancyhdr, amsmath, amssymb, amsthm}
+\usepackage{xcolor, ulem, soulutf8, soul, fancyhdr, amsmath, amssymb, amsthm, svg, wrapfig, csvsimple, float, caption, subcaption}
 \usepackage[shortlabels]{enumitem}
 \usepackage{titlesec, hyperref, multicol, listings}
 \usepackage[most]{tcolorbox}
@@ -12,7 +12,6 @@
 \usepackage[most]{tcolorbox}
 \usepackage{tocloft, longtable, skak, stmaryrd, color}
 \usepackage[framemethod = tikz]{mdframed}
-\usepackage{svg, wrapfig, csvsimple, float, caption, subcaption}
 
 \definecolor{codegreen}{rgb}{0,0.6,0}
 \definecolor{codegray}{rgb}{0.5,0.5,0.5}
@@ -39,12 +38,12 @@
 \newtcblisting{mylisting}{
 	listing only,
 	breakable,
-	colback=backcolour,
+	colback = backcolour,
 	enhanced jigsaw,
 	sharp corners,
-	boxrule=0pt,
+	boxrule = 0pt,
 	frame hidden,
-	listing options={
+	listing options = {
 		mathescape,
 		commentstyle = \color{codegreen},
 		keywordstyle = \color{magenta},
@@ -61,7 +60,7 @@
 		showstringspaces = false,
 		showtabs = false,
 		tabsize = 4,
-		inputencoding=utf8,
+		inputencoding = utf8,
 		language = python
 	}
 }
@@ -143,6 +142,26 @@ function $\mathtt{stochastic\_descent}(x, y)$:
 		$\mathtt{next} \gets S(x, y, w)$
 	return $w$
 	\end{mylisting}
+	\paragraph{Пример с SGD, Minibatch, GD.}
+	Для понимания контекста, давайте увидим разницу между рассматриваемым градиентным спуском, Minibatch и общим, с которым мы уже давно знакомы. Возьмем в качестве функции $f(x, y) = x^{2} + y^{2}$, тогда его градиентом будет $\dfrac{\partial{f}}{\partial{\vec{x}}} = 2x + 2y$, также для GD мы выставим следующие параметры:
+	\begin{itemize}
+		\item $\texttt{learning\_rate} = 0.1$
+		\item $\varepsilon = 0.00001$
+		\item $\texttt{max\_epoch} = 1000$~-- одно из условий остановки спуска, вторым~-- проверка, что мы сошлись.
+	\end{itemize}
+	Запустим и посмотрим на график всех трех джентльменов.
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale = 0.5]{Image/T1_3d_FUNCTIONS.png}
+		\caption*{SGD vs. Minibatch vs. GD}
+	\end{figure}
+	Полученные данные, после прохода алгоритмов, выглядят так:
+	\begin{itemize}
+		\item Для стохастического нашлась $f(0.002658, 0.00836) \approx 0.000008$.
+		\item Для Minibatch~-- $f(0.002658, 0.000219) \approx 0.000007$.
+		\item Для градиентного спуска (constant)~-- $f(0.001701, 0.002042) \approx 0.000007$.
+	\end{itemize}
+ 	Точками отмечены шаги алгоритмов. Заметим, что в отличие GD, стохастический спуск уже с первого шага начинает идти не туда и, как можно приглядеться в минимуме функции, \textcolor{blue}{синяя} полоса пробирается то левее, то правее GD небольшими шагами. Minibatch также начинает свое \textcolor{red}{движение} не совсем по траектории GD, но в отличие от своего предшественника, быстрее начинает сходится к настоящей траектории.
 	\subsubsection*{Minibatch градиентный спуск}
 	Модификация \textit{Minibatch} обобщает вариант стохастического градиентного спуска, тем, что во время итерации мы будем брать не одну случайную точку из посчитанных на предыдущем шаге и изменять функцию потери как бы относительно её, а теперь возьмем выборку $M' \subset M$, причем, обязательно, чтобы $|M'| > 1$ и $|M'| < |M|$.
 
@@ -191,6 +210,7 @@ function $\mathtt{stochastic\_descent}(x, y, m)$:
 	$\mathtt{next} \gets S(x, y, w)$
 	return $w$
 	\end{mylisting}
+	\paragraph{Исследование }
 	\subsection*{Learning rate scheduling}
 	Задачей мы поставим подбор функции изменения шага, чтобы улучшить сходимость из предыдущего пункта.
 	Тогда, мы использовали самый простой способ~-- \textit{константный}, однако у него есть недостаток: иногда шаг в $\mathtt{const\_learning\_rate}$ может <<перепрыгнуть>> через минимум и/или начать <<прыгать>> через него бесконечно много раз, в таком случае мы хотим, чтобы шаг был уменьшен.
@@ -201,6 +221,103 @@ function $\mathtt{stochastic\_descent}(x, y, m)$:
 	\[
 		\mathtt{learning\_rate} = \mathtt{start\_learning\_rate} \cdot e^{-k \cdot \mathtt{epoch}},
 	\] где $\mathtt{learning\_rate}$~-- текущий размер шага, $\mathtt{start\_learning\_rate}$~-- стартовая длина, $k$~-- некий параметр, который может зависеть от размера выбранного батча, и, наконец, $\mathtt{epoch}$~-- текущий номер эпохи.
+	\paragraph{Пример с $f(x) = 2x + 0$.}
+	Для линейной регрессии рассмотрим в качестве функции $f(x) = 2x + 0$, где $a = 2$ и $b = 0$.
+	Сравним разницу между константным и экспоненциальной функциями потерь, где в качестве значения $k \gets 0.05$ и \texttt{epoch} будем считать следующим образом: $(\texttt{current\_epoch} + 10)$.
+	Рассмотрим следующую зависимость: \texttt{значение\_функции\_потерь(количество\_эпох)}.
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale = 0.68]{Image/T1_SGD_constantLR_expLR.jpeg}
+		\caption*{Constant lr vs. Exponential lr}
+	\end{figure}
+	Как можно заметить, константный метод по очевидным причинам хуже сходится (параллельная линия оси ординат), экспоненциальная же понемногу (на самом деле, по многу) начинает быстрее сходится из-за присутствия <<минуса>> в степени и, соответственно, меньшим lr.
+	\paragraph{SGD и разные функции потерь.}
+	Как и в предыдущей задаче, мы рассмотрим линейную регрессию, но в качестве исследования мы возьмем других не менее известных представителей функций потерь:
+	\begin{align*}
+		\text{MAE} &= \dfrac{\sum\limits_{i = 1}^{n}{|y_{i} - x_{i}|}}{n} \\
+		L_{\delta}(a) &=
+		\begin{cases}
+			\dfrac{1}{2} \cdot a^{2}, ~ |a| \leqslant \delta, \\
+			\delta \cdot \left(|a| - \dfrac{1}{2} \cdot \delta\right)
+		\end{cases}, ~ \text{где} ~ a = y - f(x) \\
+		\text{logcosh} &= \log{\left(\dfrac{e^{y_{\text{pred}} - y_{\text{real}}} + e^{-y_{\text{pred}} + y_{\text{real}}}}{2}\right)} \\
+		\text{quantile} &=
+		\begin{cases}
+			\alpha \cdot (y_{\text{real} - y_{\text{pred}}}), ~ y_{\text{real} - y_{\text{pred}}} \geqslant 0 \\
+			(\alpha - 1) \cdot (y_{\text{real} - y_{\text{pred}}})
+		\end{cases}
+	\end{align*}
+	 На сей раз, мы рассмотрим линейную функцию $f(x) = 2x - 1$.
+	 Для каждого из функций потерь построим pred-функцию и сравним их эффективность в плане восстановления до исходной прямой.
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale = 0.6]{Image/T1_SGD_with_LOSS_FUNCTIONS.jpeg}
+		\caption*{Real vs. mae vs. mse vs. huber vs. logcosh vs. quantile}
+	\end{figure}
+	Для нее мы задали следующие настройки алгоритма:
+	\begin{itemize}
+		\item Количество генерируемых весов~-- $5000$.
+		\item $\varepsilon \gets 0.0085$
+		\item $\texttt{learning\_rate} \gets 0.1$
+		\item Максимальное число до сходимости~-- $1000$.
+	\end{itemize}
+	Заметим, что почти все методы отработали почти \textcolor{green}{одинаково} и совпали с настоящей прямой.
+	Полные результаты коэффициентов уравнений прямой такие:
+	\begin{align*}
+		\text{MSE} &\to y = 2.002 \cdot x - 1.000 \\
+		\text{MAE} &\to y = 2.005 \cdot x - 1.002 \\
+		\text{HUBER} &\to y = 1.999 \cdot x - 0.998 \\
+		\text{LOGCOSH} &\to y = 1.999 \cdot x - 0.998 \\
+		\text{QUANTILE} &\to y = 2.006 \cdot x - 1.002
+	\end{align*}
+	\paragraph{Minibatch и разные функции потерь.}
+	Как и в прошлом примере, мы возьмем функцию $f(x) = 2x - 1$ и те же разные местные представители фауны из предыдущего пункта.
+	Однако, теперь мы возьмем Minibatch GD и составим график на сей раз $\texttt{значение\_функции\_потери}(\texttt{эпохи})$.
+	Настройки для алгоритма такие же, как и в прошлом пункте.
+	Запустим и проанализируем:
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale = 0.78]{Image/T1_MINIBATCH_with_LOSS_FUNCTIONS.png}
+		\caption*{Minibatch vs. loss functions}
+	\end{figure}
+	И мы получаем две категории победы у разных функций:
+	\begin{itemize}
+		\item По быстроте (то есть, по количеству эпох) сходимости (то есть, когда мы получаем параллельную прямую над осью ординат)~-- $\text{MAE}$, при этом эта функция проигрывает следующей категории.
+		\item По аргументу (то есть, по значению функции потерь)~-- получаем вровень идущих $L_{\delta}(a)$ и $\text{logcosh}$, приближающееся к нулю.
+	\end{itemize}
+	Полные результаты значений функций потерь:
+	\begin{align*}
+		\text{MSE} &\to
+		\begin{cases}
+			\text{REAL} = 0.02061322422787911 \\
+			\text{MSE} = 0.020611644279003895 \\
+			\text{DIFF} = -1.579948875216064e-06
+		\end{cases} \\
+		\text{MAE} &\to
+		\begin{cases}
+			\text{REAL} = 0.12404634033734865 \\
+			\text{MAE} = 0.12403644707794269 \\
+			\text{DIFF} = -9.89325940596586e-06
+		\end{cases} \\
+		\text{HUBER} &\to
+		\begin{cases}
+			\text{REAL} = 0.010306612113939555 \\
+			\text{HUBER} = 0.010306151224572697 \\
+			\text{DIFF} = -4.6088936685867443e-07
+		\end{cases} \\
+		\text{LOGCOSH} &\to
+		\begin{cases}
+			\text{REAL} = 0.010242649302131148 \\
+			\text{LOGCOSH} = 0.01024226833627978 \\
+			\text{DIFF} = -3.809658513671127e-07
+		\end{cases} \\
+		\text{QUANTILE} &\to
+		\begin{cases}
+			\text{REAL} = 0.06202317016867433 \\
+			\text{QUANTILE} = 0.062018214022529945 \\
+			\text{DIFF} = -4.956146144381723e-06
+		\end{cases}
+	\end{align*}
 	\subsection*{Исследование различных модификаций}
 	Исследуйте модификации градиентного спуска (Nesterov, Momentum, AdaGrad, RMSProp, Adam).
 	\subsubsection*{Momentum}
