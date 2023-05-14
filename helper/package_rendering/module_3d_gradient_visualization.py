@@ -34,7 +34,7 @@ def print_full_grad(file_info_3d, list_result, list_label, title='Градиен
     for i in range(len(list_result)):
         x = list_result[i][:, 0]
         y = list_result[i][:, 1]
-        z = np.vectorize(lambda x_dot, y_dot: file_info_3d.f(np.array([x_dot, y_dot])))(x, y)
+        z = np.vectorize(lambda x_dot, y_dot: file_info_3d.f([x_dot, y_dot]))(x, y)
         ax.plot(x, y, marker='.', markersize=10, markerfacecolor='black', zs=z, label=list_label[i], linewidth=2)
         print(
             f'{list_label[i]:15} ==> '

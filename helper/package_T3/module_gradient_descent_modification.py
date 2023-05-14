@@ -270,7 +270,7 @@ def custom_gradient_descent_with_lr_scheduling_and_RMSProp (
                 break
 
         grad_x = gradient(x)
-        G = G*0.9 + (1 - 0.9) * (grad_x ** 2)
+        G = G*0.9 + (1 - 0.9) * (grad_x.dot(grad_x))
         new_x = x - grad_x * lr_scheduling_func(i, initial_lr) / (math.sqrt(G + eps_RMSProp))
 
         if apply_value:
@@ -344,7 +344,7 @@ def custom_gradient_descent_with_lr_scheduling_and_Adam (
 
         grad_x = gradient(x)
         moment = moment*B1 + (1 - B1)*grad_x
-        G = G*B2 + (1 - B2) * (grad_x ** 2)
+        G = G*B2 + (1 - B2) * (grad_x.dot(grad_x))
         # new_x = x - lr_scheduling_func(i, initial_lr) / (math.sqrt(G + eps_Adam)) * moment
 
         moment_more = moment / (1 - B1 ** i)
