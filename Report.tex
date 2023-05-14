@@ -210,7 +210,61 @@ function $\mathtt{stochastic\_descent}(x, y, m)$:
 	$\mathtt{next} \gets S(x, y, w)$
 	return $w$
 	\end{mylisting}
-	\paragraph{Исследование }
+	\paragraph{Исследование Stohastic vs. Minibatch vs. GD.}
+	В качестве рассматриваемого пространства $\mathbb{R}^{2}$, где $2 = \texttt{количество\_весов} + \texttt{<<результирующий\_вес>>}$, для $X \subset \mathbb{N}$ мы возьмем множество $\{x\}_{i = 1}^{n}$, где $n \gets 500$ и $x_{i} < x_{i + 1}$.
+	Возьмем в качестве генерируемой прямой в пространстве одного из наиболее известного представителя фауны функции потерь, называемый \textit{MSE}.
+	Построим график исследования $\texttt{эпохи}(\texttt{batch\_size})$, где под \textit{эпохами} мы определяем количество шагов до сходимости к значению функции потерь на реальных данных с $\pm$ точности, порядка, стремящихся к нулю.
+	Построим график.
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale = 0.55]{Image/T1_ECHOES_BATCHSIEZ.png}
+		\caption*{SGD vs. Minibatch vs. GD}
+	\end{figure}
+	Итак проанализируем.
+	Мы уже знаем, что стохастический градиентный спуск и Minibatch в внезапный момент начинают идти куда-либо, только не по направлению анти-градиента.
+	Замечаем также, особенность в Minibatch: существуют некоторые $n_{i} : \exists n'_{i} : n_{i} < n'_{i}, ~ \forall n'' \in [n_{i}, n'_{i}] ~ \texttt{epoechs}(n'') = \texttt{const}$.
+	Другими словами: существуют некоторые периоды $\pi_{i}$, при которых количество шагов до сходимости не меняются.
+	При этом, замечаем $\forall i$ верно, что $|\pi_{i}| < |\pi_{i + 1}|$, что, вероятнее всего, связано с размером батча и генерируемых весов точек, заданных уже имплементацией лабораторной работы.
+	Почти полная таблица того, как именно изменяются количества эпох:
+	\begin{table}[H]
+		\centering
+		\begin{tabular}{|c|c|}
+			Batch size & $\text{Кол-во эпох}_{\times 10^2}$ \\ \hline
+			100 & 2229 \\
+			101 & 2202 \\
+			102 & 2186 \\
+			103 & 2169 \\
+			104 & 2136 \\
+			105 & 2121 \\
+			106 & 2099 \\
+			107 & 2085 \\
+			$\vdots$ & $\vdots$ \\
+			208 & 1102 \\
+			209 & 1102 \\
+			210 & 1100 \\
+			211 & 1100 \\
+			212 & 1100 \\
+			213 & 1100 \\
+			214 & 1099 \\
+			215 & 1099 \\
+			216 & 1097 \\
+			$\vdots$ & $\vdots$ \\
+			468 & 512 \\
+			469 & 501 \\
+			470 & 500 \\
+			471 & 501 \\
+			472 & 500 \\
+			473 & 500 \\
+			$\vdots$ & $\vdots$ \\
+			494 & 500 \\
+			495 & 500 \\
+			496 & 500 \\
+			497 & 500 \\
+			498 & 500 \\
+			499 & 500 \\
+			500 & 500
+		\end{tabular}
+	\end{table}
 	\subsection*{Learning rate scheduling}
 	Задачей мы поставим подбор функции изменения шага, чтобы улучшить сходимость из предыдущего пункта.
 	Тогда, мы использовали самый простой способ~-- \textit{константный}, однако у него есть недостаток: иногда шаг в $\mathtt{const\_learning\_rate}$ может <<перепрыгнуть>> через минимум и/или начать <<прыгать>> через него бесконечно много раз, в таком случае мы хотим, чтобы шаг был уменьшен.
@@ -336,6 +390,31 @@ function $\mathtt{stochastic\_descent}(x, y, m)$:
 	\[
 		w_{i + 1} = w_{i} - \alpha \cdot v_{i + 1}, ~ \alpha = \mathtt{const}
 	\]
+	Здесь и во всех ниже рассматриваемых модификациях стохастического градиентного спуска мы будем рассматривать в качестве функции потерь функцию \textit{MSE}.
+	Настроим наше исследование и запустим с следующими параметрами:
+	\begin{itemize}
+		\item Максимальное количество эпох~-- $4000$.
+		\item Начальным \texttt{learning\_rate}~-- $0.001$.
+		\item Количество генерируемых точек~-- $500$.
+	\end{itemize}
+	Важное замечание: здесь и далее мы будем ограничивать по количество шагов алгоритма.
+	Если оно превысило число генерируемых точек, то алгоритм останавливается и передается новое значение батча.
+	Рассмотрим же график для \textit{Momentum}.
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale = 0.78]{Image/T3_MOMENTUM_GENERAL.png}
+		\caption*{Momentum in general}
+	\end{figure}
+	Заметим, что изначально, как и ожидается, алгоритм быстро сходится при больших числах размерах батча.
+	Однако, в какой-то момент, число шагов резко возрастает и, можно заметить, что в среднем зависимость будет перепадать на сам батч, чем на веса.
+	Это происходит из-за многих проблем: одна из которых заключается в том, что наши шаги становятся слишком маленькие настолько, что максимальное число эпох не покрывает в пределе.
+
+	Более детальное изображение Momentum при первых десяти batch размерах:
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale = 0.78]{Image/T3_MOMENTUM_1_10.png}
+		\caption*{Momentum in $[1, 10]$}
+	\end{figure}
 	\subsubsection*{Nesterov}
 	Модификация \textit{Nesterov} по своей сути почти ничем не отличается ранее рассмотренного Momentum: единственное, что отделяет братьев по крови, так это то, что Nesterov считает градиент не в текущей точке, на которой мы стоим, а той, куда мы бы могли пойти, следуя импульсу.
 	Тогда, наши основные формулы немного меняются, для скорости:
@@ -346,6 +425,22 @@ function $\mathtt{stochastic\_descent}(x, y, m)$:
 	\[
 		w_{i + 1} = w_{i} - \alpha \cdot v_{i + 1}
 	\]
+	Для исследования алгоритма мы выставим ровно те же настройки, что были у Momentum.
+	Рассмотрим же график для Nesterov.
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale = 0.78]{Image/T3_NESTEROV_GENERAL.png}
+		\caption*{Nesterov in general}
+	\end{figure}
+	Замечаем, что количество шагов не сильно (иначе говоря, не хуже), чем в предыдущем рассмотренном пациенте.
+	Однако, проблема с шагами остается, чему является подтверждение на последних итерациях batch размеров.
+
+	Более детальное изображение Nesterov при первых десяти batch размерах:
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale = 0.78]{Image/T3_NESTEROV_1_10.png}
+		\caption*{Nesterov in $[1, 10]$}
+	\end{figure}
 	\subsubsection*{AdaGrad}
 	Рассмотрим некий $\mathtt{start\_learning\_rate}$ и стандартный метод стохастического спуска.
 	Как мы уже видели, одним из недостатков такого метода является появления слишком больших или, наоборот, маленьких компонент относительно друг друга.
@@ -359,6 +454,22 @@ function $\mathtt{stochastic\_descent}(x, y, m)$:
 	\]
 	Теперь же, там, где мы потенциально делаем большие шаги, мы делим на большое $\Omega_{i, i}$ и таким образом уменьшаем количество больших скачков.
 	Тут мы получаем глобальную проблема в виде потенциально слишком высокой скорости уменьшения шага.
+
+	Настроим наше исследование и запустим с следующими параметрами:
+	\begin{itemize}
+		\item Максимальное количество эпох~-- $4000$.
+		\item Начальным \texttt{learning\_rate}~-- $0.1$.
+		\item Количество генерируемых точек~-- $500$.
+		\item В качестве константы положим $\alpha = 1e-5$.
+	\end{itemize}
+	Рассмотрим же график для AdaGrad.
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale = 0.9]{Image/T3_ADAGRAD_GENERAL.png}
+		\caption*{AdaGrad in general}
+	\end{figure}
+	Количество шагов, из-за все ещё нерешенной глобальной проблемы, стало в среднем немного хуже, чем в предыдущих модификациях, однако здесь мы не видим каких-либо резких возвышений и перепадов.
+	Также заметим, что график функции выглядит не как линия, а как некий <<шум>>, резко перебегающей функцией то вверх, то вниз.
 	\subsubsection*{RMSProp}
 	Модификация \textit{RMSProp} решает возникшую проблему с AdaGrad, в качестве решения было предложено усреднять значения.
 	Пусть $(g_{i})^{2}$~-- покомпонентное возведение в квадрат, $\eth$~-- некое число порядка $[10^{-10}, ~ 10^{-7}]$, дабы по формуле не было деления на ноль.
@@ -370,6 +481,21 @@ function $\mathtt{stochastic\_descent}(x, y, m)$:
 	\[
 		w_{i + 1} = w_{i} - \alpha \cdot \dfrac{g_{i}}{\sqrt{s_{i + 1} + \eth}}, ~ \alpha = \mathtt{const}
 	\]
+	Для исследования алгоритма мы выставим ровно те же настройки, что были у AdaGrad.
+	Рассмотрим же график для RMSProp.
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale = 0.9]{Image/T3_RMSPROP_GENERAL.png}
+		\caption*{RMSProp in general}
+	\end{figure}
+	Даже анализа не нужно, чтобы понять, количество необходимых шагов до сходимости резко возрастает в связи с более равномерным изменением весов, одновременно решая глобальную проблему, тянувшейся еще с Momentum.
+
+	Более детальное изображение RMSProp при первых десяти batch размерах:
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale = 0.9]{Image/T3_RMSPROP_1_10.png}
+		\caption*{RMSProp in $[1, 10]$}
+	\end{figure}
 	\subsubsection*{Adam}
 	Начинаем объединение веселья предыдущих.
 	В отличие от всех его предшественником модификация \textit{Adam} является наиболее распространенным и используемым.
@@ -383,9 +509,79 @@ function $\mathtt{stochastic\_descent}(x, y, m)$:
 	\[
 		w_{i + 1} = w_{i} - \lambda \cdot \dfrac{\hat{v}_{i + 1}}{\sqrt{\hat{s}_{i + 1} + \eth}},
 	\] где $\lambda_{1} = 0.9$, $\lambda_{2} = 0.999$ и $\eth = 10^{-8}$.
+	Настроим наше исследование и запустим с следующими параметрами:
+	\begin{itemize}
+		\item Максимальное количество эпох~-- $4000$.
+		\item Начальным \texttt{learning\_rate}~-- $5e-1$.
+		\item Количество генерируемых точек~-- $500$.
+	\end{itemize}
+	Рассмотрим же график для Adam.
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale = 0.9]{Image/T3_ADAM_GENERAL.png}
+		\caption*{Adam in general}
+	\end{figure}
+	Даже анализа не нужно, чтобы понять, количество необходимых шагов до сходимости резко возрастает в связи с более равномерным изменением весов, одновременно решая глобальную проблему, тянувшейся еще с Momentum.
+
+	Более детальное изображение Adam при первых десяти batch размерах:
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale = 0.9]{Image/T3_ADAM_1_10.png}
+		\caption*{Adam in $[1, 10]$}
+	\end{figure}
 	\subsubsection*{Сравнение модификаций}
-	\paragraph{Сходимость}
-	\paragraph{Траектории}
+	\paragraph{Сходимость.}
+	Ниже представлены графики зависимости времени и памяти на все созданные выше модификации с подписанными названиями.
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale = 0.6]{Image/T4_NESTEROV.png}
+		\caption*{Nesterov/Time/Memory}
+	\end{figure}
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale = 0.6]{Image/T4_MOMENTUM.png}
+		\caption*{Momentum/Time/Memory}
+	\end{figure}
+	\begin{figure}[H]
+	\centering
+	\includegraphics[scale = 0.6]{Image/T4_ADAGRAD.png}
+	\caption*{AdaGrad/Time/Memory}
+\end{figure}
+	\begin{figure}[H]
+	\centering
+	\includegraphics[scale = 0.6]{Image/T4_RMS.png}
+	\caption*{RMSProp/Time/Memory}
+\end{figure}
+	\begin{figure}[H]
+	\centering
+	\includegraphics[scale = 0.6]{Image/T4_ADAM.png}
+	\caption*{Adam/Time/Memory}
+\end{figure}
+	Также представим таблицу использования арифметических операций в разных функциях, которые имплементированы в модификациях.
+		\begin{table}[H]
+		\centering
+		\begin{tabular}{|c|c|}
+			Функция из имплементации & Количество арифметических операций \\ \hline
+			\texttt{...\_with\_lr\_scheduling\_and\_moment} & 144539 \\
+			\texttt{...\_with\_lr\_scheduling\_and\_nesterov\_moment} & 147550 \\
+			\texttt{...\_with\_lr\_scheduling\_and\_adagrad} & 511881 \\
+			\texttt{...\_with\_lr\_scheduling\_and\_RMSProp} & 48187 \\
+			\texttt{...\_with\_lr\_scheduling\_and\_Adam} & 12055
+		\end{tabular}
+	\end{table}
+	\paragraph{Траектории.}
+	Траектория спуска различных алгоритмов из одной и той же исходной точки с одинаковой точностью.
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale = 0.6]{Image/T5_DIRECTIONS.png}
+		\caption*{Directions}
+	\end{figure}
+	Рисунок с линиями равного уровня заданной функции.
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale = 0.6]{Image/T5_LINES.png}
+		\caption*{Lines}
+	\end{figure}
 	\newpage
 	\section*{Полиномиальная регрессия}
 	\begin{enumerate}[1.]
