@@ -1,6 +1,7 @@
 # Для расчетов
 import numpy as np
 
+from ..package_T2 import constant_lr_scheduling
 
 # ==================================================================================================================== #
 # Градиентный спуск
@@ -63,7 +64,8 @@ def custom_gradient_descent_with_lr_scheduling(
             if new_value < value:
                 x = new_x
                 value = new_value
-
+        else:
+            x = new_x
         points.append(x.copy())
 
     return points
@@ -71,10 +73,7 @@ def custom_gradient_descent_with_lr_scheduling(
 
 # ==================================================================================================================== #
 
-def constant_lr_scheduling(epoch, initial_lr):
-    return initial_lr
-
-class minibatch:
+class minibatch_library:
     def mse_loss(self, x):
         y_pred = np.dot(self.X, x[0])
         mse = np.mean((self.y - y_pred) ** 2)
