@@ -43,13 +43,21 @@ def custom_gradient_descent_with_lr_scheduling(
 
     x = np.copy(x0)
     points = [x.copy()]
+    value = f(x)
     for i in range(num_iterations):
-        if apply_min and abs(f(x) - minimum) < eps:
+        if apply_min and abs(value - minimum) < eps:
             break
 
-        grad_x = gradient(f, x)
-        x = x - grad_x * lr_scheduling_func(i, initial_lr)
+        grad_x = gradient(x)
+        new_x = x - grad_x * lr_scheduling_func(i, initial_lr)
+
+        new_value = f(new_x)
+        if new_value < value:
+            x = new_x
+            value = new_value
+
         points.append(x.copy())
+
     return np.array(points)
 
 # ==================================================================================================================== #
