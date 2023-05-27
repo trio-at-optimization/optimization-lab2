@@ -470,6 +470,13 @@ function $\mathtt{stochastic\_descent}(x, y, m)$:
 	\end{figure}
 	Количество шагов, из-за все ещё нерешенной глобальной проблемы, стало в среднем немного хуже, чем в предыдущих модификациях, однако здесь мы не видим каких-либо резких возвышений и перепадов.
 	Также заметим, что график функции выглядит не как линия, а как некий <<шум>>, резко перебегающей функцией то вверх, то вниз.
+
+	Более детальное изображение AdaGrad при первых десяти batch размерах:
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale = 0.9]{Image/T3_ADAGRAD_1_10.png}
+		\caption*{RMSProp in $[1, 10]$}
+	\end{figure}
 	\subsubsection*{RMSProp}
 	Модификация \textit{RMSProp} решает возникшую проблему с AdaGrad, в качестве решения было предложено усреднять значения.
 	Пусть $(g_{i})^{2}$~-- покомпонентное возведение в квадрат, $\eth$~-- некое число порядка $[10^{-10}, ~ 10^{-7}]$, дабы по формуле не было деления на ноль.
@@ -576,11 +583,35 @@ function $\mathtt{stochastic\_descent}(x, y, m)$:
 		\includegraphics[scale = 0.6]{Image/T5_DIRECTIONS.png}
 		\caption*{Directions}
 	\end{figure}
-	Рисунок с линиями равного уровня заданной функции.
+	Рисунок с линиями равного уровня для Momentum.
 	\begin{figure}[H]
 		\centering
-		\includegraphics[scale = 0.6]{Image/T5_LINES.png}
-		\caption*{Lines}
+		\includegraphics[scale = 0.6]{Image/T5_LINES_MOMENTUM.png}
+		\caption*{Lines:Momentum}
+	\end{figure}
+	Для Nesterov:
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale = 0.6]{Image/T5_LINES_NESTEROV.png}
+		\caption*{Lines:Nesterov}
+	\end{figure}
+	Для AdaGrad:
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale = 0.6]{Image/T5_LINES_ADAGRAD.png}
+		\caption*{Lines:AdaGrad}
+	\end{figure}
+	Для RMSProp:
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale = 0.6]{Image/T5_LINES_RMSPROP.png}
+		\caption*{Lines:RMSProp}
+	\end{figure}
+	Для Adam:
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale = 0.6]{Image/T5_LINES_ADAM.png}
+		\caption*{Lines:Adam}
 	\end{figure}
 	\newpage
 	\section*{Полиномиальная регрессия}
