@@ -657,13 +657,19 @@ function $\mathtt{stochastic\_descent}(x, y, m)$:
 	Идея \textit{L1 регуляризации}.
 	Давайте с каждой новой итерации мы будем неким способом <<наказывать>> нашу модель за высокие веса, чтобы в будущем увеличить обобщающую способность.
 	Эта регуляризация основана на добавлении еще одного слагаемого в основную сумму, равного абсолютному значению коэффициентов полинома.
+%	\[
+%		L = \omega \cdot \sum\limits_{i = 1}^{n}{\left(\sum\limits_{j = 0}^{k}{\left(a_{j} \cdot x_{i}^{j} - y_{i}\right)^{2}}\right)^{2}} + \lambda \cdot \sum\limits_{i = 0}^{k}{\left(|a_{i}|\right)},
+%	\]
 	\[
-		L = \omega \cdot \sum\limits_{i = 1}^{n}{\left(\sum\limits_{j = 0}^{k}{\left(a_{j} \cdot x_{i}^{j} - y_{i}\right)^{2}}\right)^{2}} + \lambda \cdot \sum\limits_{i = 0}^{k}{\left(|a_{i}|\right)},
+		L = \omega\cdot\sum\limits_{i = 1}^{n}{\left(\sum\limits_{j = 0}^{k}{\left(a_{j} \cdot x^{j}_{i}\right)} - y_{i}\right)^{2}} + \lambda \cdot \sum\limits_{i = 0}^{k}{\left(|a_{i}|\right)},
 	\]
 	где $\lambda$~-- есть общий коэффициент для регуляризации влияния штрафов на модель.
 	Градиентом для модели будет выступать тогда такая формула:
+%	\[
+%		\dfrac{\partial{L}}{\partial{a_{\mathbf{i}}}} = 2 \cdot \omega \cdot \sum\limits_{i = 1}^{n}{\left(\sum\limits_{j = 0}^{k}{\left(a_{j} \cdot x_{i}^{j} - y_{i}\right) \cdot x^{i}_{\mathbf{i}}}\right)} + \lambda
+%	\]
 	\[
-		\dfrac{\partial{L}}{\partial{a_{\mathbf{i}}}} = 2 \cdot \omega \cdot \sum\limits_{i = 1}^{n}{\left(\sum\limits_{j = 0}^{k}{\left(a_{j} \cdot x_{i}^{j} - y_{i}\right) \cdot x^{i}_{\mathbf{i}}}\right)} + \lambda
+		\dfrac{\partial{L}}{\partial{a_{\mathbf{i}}}} = 2\cdot\omega\cdot\sum\limits_{i = 1}^{n}{\left(\sum\limits_{j = 0}^{k}{\left(a_{j} \cdot x_{i}^{j}\right)} - y_{i}\right) \cdot x^{i}_{\mathbf{i}}} + \lambda
 	\]
 	\subsubsection*{L2}
 	Идея \textit{L2 регуляризации}.
@@ -671,23 +677,35 @@ function $\mathtt{stochastic\_descent}(x, y, m)$:
 	Проблема L1 заключалась в том, что в некоторых местах, где производная не может быть установлена, имеет резкие <<горы>>, <<впадины>> и вообще разрывы.
 	Тогда, на помощью приходит немного иное штрафное значение функции~-- вместо суммы значений коэффициентов полинома мы возьмем квадраты.
 	Отличает этот подход от L1 тем, что теперь мы штрафуем больше, но при этом никогда не зануляемся, как это было с предыдущей модификацией.
+%	\[
+%		L = \omega \cdot \sum\limits_{i = 1}^{n}{\left(\sum\limits_{j = 0}^{k}{\left(a_{j} \cdot x_{i}^{j} - y_{i}\right)^{2}}\right)^{2}} + \lambda \cdot \sum\limits_{i = 0}^{k}{\left(a_{i}^{2}\right)},
+%	\]
 	\[
-		L = \omega \cdot \sum\limits_{i = 1}^{n}{\left(\sum\limits_{j = 0}^{k}{\left(a_{j} \cdot x_{i}^{j} - y_{i}\right)^{2}}\right)^{2}} + \lambda \cdot \sum\limits_{i = 0}^{k}{\left(a_{i}^{2}\right)},
+		L = \omega\cdot\sum\limits_{i = 1}^{n}{\left(\sum\limits_{j = 0}^{k}{\left(a_{j} \cdot x^{j}_{i}\right)} - y_{i}\right)^{2}} + \lambda \cdot \sum\limits_{i = 0}^{k}{\left(a_{i}^2\right)},
 	\]
 	где $\lambda$~-- есть общий коэффициент для регуляризации влияния штрафов на модель.
 	Градиентом для модели будет выступать тогда такая формула:
+%	\[
+%		\dfrac{\partial{L}}{\partial{a_{\mathbf{i}}}} = 2 \cdot \omega \cdot \sum\limits_{i = 1}^{n}{\left(\sum\limits_{j = 0}^{k}{\left(a_{j} \cdot x_{i}^{j} - y_{i}\right) \cdot x^{i}_{\mathbf{i}}}\right)} + \lambda \cdot a_{\mathbf{i}}
+%	\]
 	\[
-		\dfrac{\partial{L}}{\partial{a_{\mathbf{i}}}} = 2 \cdot \omega \cdot \sum\limits_{i = 1}^{n}{\left(\sum\limits_{j = 0}^{k}{\left(a_{j} \cdot x_{i}^{j} - y_{i}\right) \cdot x^{i}_{\mathbf{i}}}\right)} + \lambda \cdot a_{\mathbf{i}}
+		\dfrac{\partial{L}}{\partial{a_{\mathbf{i}}}} = 2\cdot\omega\cdot\sum\limits_{i = 1}^{n}{\left(\sum\limits_{j = 0}^{k}{\left(a_{j} \cdot x_{i}^{j}\right)} - y_{i}\right) \cdot x^{i}_{\mathbf{i}}} + \lambda \cdot a_{\mathbf{i}}
 	\]
 	\subsubsection*{Elastic регуляризация}
 	Идея \textit{Elastic регуляризация}.
 	Объединение двух предыдущих идей, как и полезных особенностей, свойств обоих методов, при этом, корреляция переменных такая, что данная регуляризация не обнуляет некоторые из них, как в случае с L1.
+%	\[
+%		L = \omega \cdot \sum\limits_{i = 1}^{n}{\left(\sum\limits_{j = 0}^{k}{\left(a_{j} \cdot x_{i}^{j} - y_{i}\right)^{2}}\right)^{2}} + \lambda_{1} \cdot \sum\limits_{i = 0}^{k}{\left(a_{i}^{2}\right)} + \lambda_{2} \cdot \sum\limits_{i = 0}^{k}{\left(a_{i}^{2}\right)},
+%	\]
 	\[
-		L = \omega \cdot \sum\limits_{i = 1}^{n}{\left(\sum\limits_{j = 0}^{k}{\left(a_{j} \cdot x_{i}^{j} - y_{i}\right)^{2}}\right)^{2}} + \lambda_{1} \cdot \sum\limits_{i = 0}^{k}{\left(a_{i}^{2}\right)} + \lambda_{2} \cdot \sum\limits_{i = 0}^{k}{\left(a_{i}^{2}\right)},
+		L = \omega\cdot\sum\limits_{i = 1}^{n}{\left(\sum\limits_{j = 0}^{k}{\left(a_{j} \cdot x^{j}_{i}\right)} - y_{i}\right)^{2}} + \lambda_{1} \cdot \sum\limits_{i = 0}^{k}{\left(|a_{i}|\right)} + \lambda_{2} \cdot \sum\limits_{i = 0}^{k}{\left(a_{i}^2\right)},
 	\]
 	где $\lambda_{1}$ и $\lambda_{2}$~-- есть коэффициенты для регуляризации влияния штрафов L1 и L2 на модель соответственно.
 	Градиентом для модели будет выступать тогда такая формула:
+%	\[
+%		\dfrac{\partial{L}}{\partial{a_{\mathbf{i}}}} = 2 \cdot \omega \cdot \sum\limits_{i = 1}^{n}{\left(\sum\limits_{j = 0}^{k}{\left(a_{j} \cdot x_{i}^{j} - y_{i}\right) \cdot x^{i}_{\mathbf{i}}}\right)} + \lambda_{1} + \lambda_{2} \cdot a_{\mathbf{i}}
+%	\]
 	\[
-		\dfrac{\partial{L}}{\partial{a_{\mathbf{i}}}} = 2 \cdot \omega \cdot \sum\limits_{i = 1}^{n}{\left(\sum\limits_{j = 0}^{k}{\left(a_{j} \cdot x_{i}^{j} - y_{i}\right) \cdot x^{i}_{\mathbf{i}}}\right)} + \lambda_{1} + \lambda_{2} \cdot a_{\mathbf{i}}
+		\dfrac{\partial{L}}{\partial{a_{\mathbf{i}}}} = 2\cdot\omega\cdot\sum\limits_{i = 1}^{n}{\left(\sum\limits_{j = 0}^{k}{\left(a_{j} \cdot x_{i}^{j}\right)} - y_{i}\right) \cdot x^{i}_{\mathbf{i}}} + \lambda_{1} + \lambda_{2} \cdot a_{\mathbf{i}}
 	\]
 \end{document}
