@@ -642,13 +642,13 @@ function $\mathtt{stochastic\_descent}(x, y, m)$:
 	\]
 	где $\{\mathbf{y}\}$~-- это значения полинома в точках $\{x\}$, тогда наше выражение преобразуется:
 	\[
-		L = \omega \cdot \left\llbracket\sum\limits_{i = 1}^{n}{\left(\sum\limits_{j = 0}^{k}{\left(a_{j} \cdot x_{i}^{j} - y_{i}\right)^{2}}\right)^{2}}\right\rrbracket \to \mathrm{min},
+		L = \omega\cdot\left\llbracket\sum\limits_{i = 1}^{n}{\left(\sum\limits_{j = 0}^{k}{\left(a_{j} \cdot x^{j}_{i}\right)} - y_{i}\right)^{2}}\right\rrbracket \to \mathrm{min},
 	\]
 	где $\omega = \dfrac{1}{n}$, для того чтобы усреднить квадратичные ошибки на всех обучающих примерах.
 	Это позволяет получить более сбалансированную и интерпретируемую метрику ошибки, не зависящую от размера обучающей выборки.
 	Для получения градиента исследуемой функции мы воспользуемся производной от $L$ по некоторому коэффициенту $a_{\mathbf{i}}$, тогда
 	\[
-		\dfrac{\partial{L}}{\partial{a_{\mathbf{i}}}} = 2 \cdot \omega \cdot \sum\limits_{i = 1}^{n}{\left(\sum\limits_{j = 0}^{k}{\left(a_{j} \cdot x_{i}^{j} - y_{i}\right) \cdot x^{i}_{\mathbf{i}}}\right)}
+		\dfrac{\partial{L}}{\partial{a_{\mathbf{i}}}} = 2\cdot\omega\cdot\sum\limits_{i = 1}^{n}{\left(\sum\limits_{j = 0}^{k}{\left(a_{j} \cdot x_{i}^{j}\right)} - y_{i}\right) \cdot x^{i}_{\mathbf{i}}}
 	\]
 	\subsection*{Исследование различных модификация}
 	Как и в задаче с градиентным спуском нам бы хотелось получать более реальные <<гладкие>> оценки предсказывания значения, вместо имения <<гор>> и <<впадин>> кривой.
