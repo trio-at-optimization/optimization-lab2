@@ -650,6 +650,65 @@ function $\mathtt{stochastic\_descent}(x, y, m)$:
 	\[
 		\dfrac{\partial{L}}{\partial{a_{\mathbf{i}}}} = 2\cdot\omega\cdot\sum\limits_{i = 1}^{n}{\left(\sum\limits_{j = 0}^{k}{\left(a_{j} \cdot x_{i}^{j}\right)} - y_{i}\right) \cdot x^{i}_{\mathbf{i}}}
 	\]
+	\subsubsection*{Пример с простым полиномом}
+	В качестве демонстрации алгоритма полилинейной регрессии мы возьмем <<простой>>, в том смысле, что он однозначным образом задается, полином третьей степени: $y = 15 + 3 \cdot x + 4 \cdot x^2 + (-2) \cdot x^3$.
+	Сгенерируем точки относительно прямой с такими параметрами:
+	\begin{align*}
+		\texttt{dots\_count} &= 800~\text{(количество генерируемых точек)} \\
+		\texttt{variance} &= 1~\text{(вариативность случайности, \texttt{np.uniform(-1, 1) * variance})}
+	\end{align*}
+	На выходе получаем такой график, где \textcolor{gray}{серым} отмечены сгенерированные данные для алгоритма, а \textcolor{green}{зеленым}~-- реальный график.
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale = 0.8]{Image/AT1_POLY_4TH_DEG_DATASET.png}
+		\caption*{Poly 4th deg (dataset)}
+	\end{figure}
+	А теперь восстановим кривую по заданным точкам.
+	Зададим ему следующие параметры на подбор функции по сгенерированным данным:
+	\begin{align*}
+		\texttt{batch\_size} &= 50~\text{(количество точек или, по простому, число $n$)} \\
+		\texttt{max\_epochs} &= 500~\text{(максимальное число шагов до схождения)} \\
+		\texttt{learning\_rate} &= 0.05~\text{(шаг в схождении к минимуму)}
+	\end{align*}
+	Получаем следующий график.
+	Здесь \textcolor{purple}{фиолетовым} цветом отмечена восстановленная кривая, а \textcolor{green}{зеленым}~-- реальный график.
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale = 1]{Image/AT1_POLY_4TH_DEG.png}
+		\caption*{Poly 4th deg (real vs. recovered)}
+	\end{figure}
+	Заметим, что восстановленная кривая полностью совпала с реальным графиком.
+	\subsubsection*{Пример с полиномом поинтереснее}
+	А теперь в качестве полинома мы возьмем такой, коэффициенты которого сгенерированы с помощью функции $y = \sin{x}$.
+	Также сгенерируем точки относительно прямой теперь с такими параметрами:
+	\begin{align*}
+		\texttt{dots\_count} &= ???~\text{(количество генерируемых точек)} \\
+		\texttt{variance} &= ???~\text{(вариативность случайности)}
+	\end{align*}
+	На выходе получаем такой график, где \textcolor{gray}{серым} отмечены сгенерированные данные для алгоритма, а \textcolor{green}{зеленым}~-- реальный график.
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale = 0.8]{Image/AT1_SIN_DATASET.png}
+		\caption*{Sin (dataset)}
+	\end{figure}
+	Восстановим кривую по заданным точкам.
+	Зададим ему следующие параметры на подбор функции по сгенерированным данным:
+	\begin{align*}
+		\texttt{batch\_size} &= ???~\text{(количество точек или, по простому, число $n$)} \\
+		\texttt{max\_epochs} &= ???~\text{(максимальное число шагов до схождения)} \\
+		\texttt{learning\_rate} &= ???~\text{(шаг в схождении к минимуму)}
+	\end{align*}
+	Получаем следующий график.
+	Здесь \textcolor{purple}{фиолетовым} цветом отмечена восстановленная кривая, а \textcolor{green}{зеленым}~-- реальный график.
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale = 0.8]{Image/AT1_SIN.png}
+		\caption*{Sin (real vs. recovered)}
+	\end{figure}
+	Заметим, что нынешняя восстановленная линия, теперь идеальным образом не совпадает.
+	Во-первых, потому-что это не ограниченный полином, как раньше было, а нечто посложнее ввиду коэффициентов.
+	Во вторых, на самом деле, и первый пример не был столь идеальным, как это могло бы показаться на первый взгляд, и здесь мы отчетливо видим смещение функции: это происходит из-за некоторых внезапных слишком больших или маленьких шагов.
+	Данную проблему решают уже непосредственно модификации.
 	\subsection*{Исследование различных модификация}
 	Как и в задаче с градиентным спуском нам бы хотелось получать более реальные <<гладкие>> оценки предсказывания значения, вместо имения <<гор>> и <<впадин>> кривой.
 	Эта проблема может быть решена с помощью модификаций к методу, которые, по своей сути, представляют из себя отдельные слагаемые.
@@ -657,55 +716,43 @@ function $\mathtt{stochastic\_descent}(x, y, m)$:
 	Идея \textit{L1 регуляризации}.
 	Давайте с каждой новой итерации мы будем неким способом <<наказывать>> нашу модель за высокие веса, чтобы в будущем увеличить обобщающую способность.
 	Эта регуляризация основана на добавлении еще одного слагаемого в основную сумму, равного абсолютному значению коэффициентов полинома.
-%	\[
-%		L = \omega \cdot \sum\limits_{i = 1}^{n}{\left(\sum\limits_{j = 0}^{k}{\left(a_{j} \cdot x_{i}^{j} - y_{i}\right)^{2}}\right)^{2}} + \lambda \cdot \sum\limits_{i = 0}^{k}{\left(|a_{i}|\right)},
-%	\]
 	\[
 		L = \omega\cdot\sum\limits_{i = 1}^{n}{\left(\sum\limits_{j = 0}^{k}{\left(a_{j} \cdot x^{j}_{i}\right)} - y_{i}\right)^{2}} + \lambda \cdot \sum\limits_{i = 0}^{k}{\left(|a_{i}|\right)},
 	\]
 	где $\lambda$~-- есть общий коэффициент для регуляризации влияния штрафов на модель.
 	Градиентом для модели будет выступать тогда такая формула:
-%	\[
-%		\dfrac{\partial{L}}{\partial{a_{\mathbf{i}}}} = 2 \cdot \omega \cdot \sum\limits_{i = 1}^{n}{\left(\sum\limits_{j = 0}^{k}{\left(a_{j} \cdot x_{i}^{j} - y_{i}\right) \cdot x^{i}_{\mathbf{i}}}\right)} + \lambda
-%	\]
 	\[
 		\dfrac{\partial{L}}{\partial{a_{\mathbf{i}}}} = 2\cdot\omega\cdot\sum\limits_{i = 1}^{n}{\left(\sum\limits_{j = 0}^{k}{\left(a_{j} \cdot x_{i}^{j}\right)} - y_{i}\right) \cdot x^{i}_{\mathbf{i}}} + \lambda
 	\]
+	\paragraph{Пример}
+	% TODO
 	\subsubsection*{L2}
 	Идея \textit{L2 регуляризации}.
 	Данная модификация является небольшим дополнением к предыдущему в виде большей гладкости производной и возможностью лучшей работой с градиентным спуском.
 	Проблема L1 заключалась в том, что в некоторых местах, где производная не может быть установлена, имеет резкие <<горы>>, <<впадины>> и вообще разрывы.
 	Тогда, на помощью приходит немного иное штрафное значение функции~-- вместо суммы значений коэффициентов полинома мы возьмем квадраты.
 	Отличает этот подход от L1 тем, что теперь мы штрафуем больше, но при этом никогда не зануляемся, как это было с предыдущей модификацией.
-%	\[
-%		L = \omega \cdot \sum\limits_{i = 1}^{n}{\left(\sum\limits_{j = 0}^{k}{\left(a_{j} \cdot x_{i}^{j} - y_{i}\right)^{2}}\right)^{2}} + \lambda \cdot \sum\limits_{i = 0}^{k}{\left(a_{i}^{2}\right)},
-%	\]
 	\[
 		L = \omega\cdot\sum\limits_{i = 1}^{n}{\left(\sum\limits_{j = 0}^{k}{\left(a_{j} \cdot x^{j}_{i}\right)} - y_{i}\right)^{2}} + \lambda \cdot \sum\limits_{i = 0}^{k}{\left(a_{i}^2\right)},
 	\]
 	где $\lambda$~-- есть общий коэффициент для регуляризации влияния штрафов на модель.
 	Градиентом для модели будет выступать тогда такая формула:
-%	\[
-%		\dfrac{\partial{L}}{\partial{a_{\mathbf{i}}}} = 2 \cdot \omega \cdot \sum\limits_{i = 1}^{n}{\left(\sum\limits_{j = 0}^{k}{\left(a_{j} \cdot x_{i}^{j} - y_{i}\right) \cdot x^{i}_{\mathbf{i}}}\right)} + \lambda \cdot a_{\mathbf{i}}
-%	\]
 	\[
 		\dfrac{\partial{L}}{\partial{a_{\mathbf{i}}}} = 2\cdot\omega\cdot\sum\limits_{i = 1}^{n}{\left(\sum\limits_{j = 0}^{k}{\left(a_{j} \cdot x_{i}^{j}\right)} - y_{i}\right) \cdot x^{i}_{\mathbf{i}}} + \lambda \cdot a_{\mathbf{i}}
 	\]
+	\paragraph{Пример}
+	% TODO
 	\subsubsection*{Elastic регуляризация}
 	Идея \textit{Elastic регуляризация}.
 	Объединение двух предыдущих идей, как и полезных особенностей, свойств обоих методов, при этом, корреляция переменных такая, что данная регуляризация не обнуляет некоторые из них, как в случае с L1.
-%	\[
-%		L = \omega \cdot \sum\limits_{i = 1}^{n}{\left(\sum\limits_{j = 0}^{k}{\left(a_{j} \cdot x_{i}^{j} - y_{i}\right)^{2}}\right)^{2}} + \lambda_{1} \cdot \sum\limits_{i = 0}^{k}{\left(a_{i}^{2}\right)} + \lambda_{2} \cdot \sum\limits_{i = 0}^{k}{\left(a_{i}^{2}\right)},
-%	\]
 	\[
 		L = \omega\cdot\sum\limits_{i = 1}^{n}{\left(\sum\limits_{j = 0}^{k}{\left(a_{j} \cdot x^{j}_{i}\right)} - y_{i}\right)^{2}} + \lambda_{1} \cdot \sum\limits_{i = 0}^{k}{\left(|a_{i}|\right)} + \lambda_{2} \cdot \sum\limits_{i = 0}^{k}{\left(a_{i}^2\right)},
 	\]
 	где $\lambda_{1}$ и $\lambda_{2}$~-- есть коэффициенты для регуляризации влияния штрафов L1 и L2 на модель соответственно.
 	Градиентом для модели будет выступать тогда такая формула:
-%	\[
-%		\dfrac{\partial{L}}{\partial{a_{\mathbf{i}}}} = 2 \cdot \omega \cdot \sum\limits_{i = 1}^{n}{\left(\sum\limits_{j = 0}^{k}{\left(a_{j} \cdot x_{i}^{j} - y_{i}\right) \cdot x^{i}_{\mathbf{i}}}\right)} + \lambda_{1} + \lambda_{2} \cdot a_{\mathbf{i}}
-%	\]
 	\[
 		\dfrac{\partial{L}}{\partial{a_{\mathbf{i}}}} = 2\cdot\omega\cdot\sum\limits_{i = 1}^{n}{\left(\sum\limits_{j = 0}^{k}{\left(a_{j} \cdot x_{i}^{j}\right)} - y_{i}\right) \cdot x^{i}_{\mathbf{i}}} + \lambda_{1} + \lambda_{2} \cdot a_{\mathbf{i}}
 	\]
+	\paragraph{Пример}
+	% TODO
 \end{document}
