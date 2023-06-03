@@ -715,7 +715,7 @@ function $\mathtt{stochastic\_descent}(x, y, m)$:
 	\[
 		\dfrac{\partial{L}}{\partial{a_{\mathbf{i}}}} = 2\cdot\omega\cdot\sum\limits_{i = 1}^{n}{\left(\sum\limits_{j = 0}^{k}{\left(a_{j} \cdot x_{i}^{j}\right)} - y_{i}\right) \cdot x^{i}_{\mathbf{i}}} + \lambda
 	\]
-	\paragraph{Пример}
+	\paragraph{Пример 1}
 	В качестве примера мы возьмем относительно небезобидную функцию $f(x) = \sin{3 \cdot x}$ и используем её как изначальный набор данных для восстановления кривой с помощью L1-регуляризации.
 	Зададим некоторые параметры для исследования:
 	\begin{align*}
@@ -741,6 +741,49 @@ function $\mathtt{stochastic\_descent}(x, y, m)$:
 	Почему так?
 	Как раз обращаемся к великому рандому точек и достаточно странной функции, которая не имеет какого-либо конечного полинома и все ошибки, связанные с почти правильным схождением восстановления кривой к реальным данным, уже относятся к коэффициентам кривой.
 	В дальнейшим, а именно в L2 и Elastic мы также вернемся к этой функции.
+	\paragraph{Пример 2}
+	Здесь посмотрим на более простую функцию, которая выглядит как полином с следующими коэффициентами: $\{15,~3,~4,~-2,~13,~6,~-7,~4,~2,~-5,~1\}$. Для него выставим (и далее такие же) настройки генерации точек:
+	\begin{align*}
+		\mathtt{density} &= 8000~\text{количество точек на плоскости} \\
+		\mathtt{dots\_count} &= 1000~\text{количество генерируемых точек} \\
+		\mathtt{dist} &= 1.6~\text{расстояния от и до генерации плоскости} \\
+		\mathtt{varience} &= 0.15~\text{вариативность генерации точек}
+	\end{align*}
+	Итак, \textcolor{green}{зеленым} здесь обозначена реальная кривая, \textcolor{gray}{серым}~-- сгенерированные точки для восстановления кривой.
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale = 0.8]{Image/AT2_V2_DATA.png}
+		\caption*{Dataset of polynom without any regs}
+	\end{figure}
+	Теперь, посмотрим на восстановленную \textcolor{violet}{кривую} без регуляризации.
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale = 1]{Image/AT2_V2_RECOVER.png}
+		\caption*{Recover of polynom without any regs}
+	\end{figure}
+	Так как это~-- конечный полином, то какую бы мы не выбрали регуляризацию, мы все равно получим нормальное приближение.
+	Нас здесь (и далее с этим полиномом) интересует только лишь значение MSE.
+	\[
+		\mathtt{mse}_{\mathtt{simple}} = 1.931090585544634
+	\]
+	Теперь посмотрим на вариант с L1-регуляризацией.
+	В качестве коэффициента положим $\lambda = 0.0009$.
+	Итак, \textcolor{green}{зеленым} здесь обозначена реальная кривая, \textcolor{gray}{серым}~-- сгенерированные точки для восстановления кривой.
+	\begin{figure}[H]
+		\centering
+			\includegraphics[scale = 0.8]{Image/AT2_L1_V2_DATA.png}
+		\caption*{Dataset of polynom with L1}
+	\end{figure}
+	Теперь, посмотрим на восстановленную \textcolor{violet}{кривую} без регуляризации.
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale = 1]{Image/AT2_L1_V2_RECOVER.png}
+		\caption*{Recover of polynom with L1}
+	\end{figure}
+	Полученный результат:
+	\[
+		\mathtt{mse}_{\mathtt{L1}} = 0.8123621976967086
+	\]
 	\subsubsection*{L2}
 	Идея \textit{L2 регуляризации}.
 	Данная модификация является небольшим дополнением к предыдущему в виде большей гладкости производной и возможностью лучшей работой с градиентным спуском.
@@ -755,7 +798,7 @@ function $\mathtt{stochastic\_descent}(x, y, m)$:
 	\[
 		\dfrac{\partial{L}}{\partial{a_{\mathbf{i}}}} = 2\cdot\omega\cdot\sum\limits_{i = 1}^{n}{\left(\sum\limits_{j = 0}^{k}{\left(a_{j} \cdot x_{i}^{j}\right)} - y_{i}\right) \cdot x^{i}_{\mathbf{i}}} + \lambda \cdot a_{\mathbf{i}}
 	\]
-	\paragraph{Пример}
+	\paragraph{Пример 1}
 	Опять же рассмотрим кривую, образованная функцией $f(x) = \sin{3 \cdot x}$, как и в предыдущей регуляризации.
 	Подставим те же настройки генерации точек, но в качестве основного коэффициента, который управляет наказанием, возьмем:
 	\[
@@ -776,7 +819,26 @@ function $\mathtt{stochastic\_descent}(x, y, m)$:
 	\end{figure}
 	Уже лучше, но все еще не хорошо.
 	Проблема в том, что у нас как будто не достаточно эвристически выбраны коэффициенты для наказания функции.
-	Хочется как-то управлять сразу обоими методами регуляризации\ldots 
+	Хочется как-то управлять сразу обоими методами регуляризации\ldots
+	\paragraph{Пример 2}
+	Продолжаем исследовать катакомбы с простым полиномом, который состоит из коэффициентов~-- $\{15,~3,~4,~-2,~13,~6,~-7,~4,~2,~-5,~1\}$.
+	В качестве настроек подставим те же, а коэффициентом положим $\lambda = 0.0005$.
+	Итак, \textcolor{green}{зеленым} здесь обозначена реальная кривая, \textcolor{gray}{серым}~-- сгенерированные точки для восстановления кривой.
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale = 0.8]{Image/AT2_L2_V2_DATA.png}
+		\caption*{Dataset of polynom with L2}
+	\end{figure}
+	Теперь, посмотрим на восстановленную \textcolor{violet}{кривую} без регуляризации.
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale = 1]{Image/AT2_L2_V2_RECOVER.png}
+		\caption*{Recover of polynom with L2}
+	\end{figure}
+	Полученный результат:
+	\[
+		\mathtt{mse}_{\mathtt{L2}} = 1.33484763531763
+	\]
 	\subsubsection*{Elastic регуляризация}
 	Идея \textit{Elastic регуляризация}.
 	Объединение двух предыдущих идей, как и полезных особенностей, свойств обоих методов, при этом, корреляция переменных такая, что данная регуляризация не обнуляет некоторые из них, как в случае с L1.
@@ -788,7 +850,7 @@ function $\mathtt{stochastic\_descent}(x, y, m)$:
 	\[
 		\dfrac{\partial{L}}{\partial{a_{\mathbf{i}}}} = 2\cdot\omega\cdot\sum\limits_{i = 1}^{n}{\left(\sum\limits_{j = 0}^{k}{\left(a_{j} \cdot x_{i}^{j}\right)} - y_{i}\right) \cdot x^{i}_{\mathbf{i}}} + \lambda_{1} + \lambda_{2} \cdot a_{\mathbf{i}}
 	\]
-	\paragraph{$\langle$\textit{экспериментальный}$\rangle$ Пример}
+	\paragraph{$\langle$\textit{экспериментальный}$\rangle$ Пример 1}
 	Наконец, мы подошли к более грозному орудию, всё также пытаясь побороться с $f(x) = \sin{3 \cdot x}$.
 	Подставим всё те же настройки генерации точек, но в качестве обоих коэффициентов, назло всем, выберем вот такие:
 	\begin{align*}
@@ -813,4 +875,27 @@ function $\mathtt{stochastic\_descent}(x, y, m)$:
 	Но здесь, поскольку один из коэффициентов уже отрицателен, то мы, идейно, поощряем ошибку, тем самым у полинома, который мы получаем в шагах алгоритма, коэффициенты становятся больше.
 	Что мы замечаем при быстром взгляде <<горки>> справа: в L1 и L2 восстановленное нечто почти не двигалось в направлении реальной точки, а Elastic с поощрением ошибок внезапно стал сильно ближе к точке.
 	Вероятнее всего, как это было сказано еще при рассмотрении L1, это связано с самой функцией, а именно её свойствах об отсутствии внятного предела (он не определен) и периодичностью.
+	\paragraph{Пример 2}
+	Всё также продолжаем исследовать катакомбы с простым полиномом, который состоит из коэффициентов~-- $\{15,~3,~4,~-2,~13,~6,~-7,~4,~2,~-5,~1\}$.
+	В качестве настроек подставим те же, а коэффициентом:
+	\begin{align*}
+		\lambda_{1} &= 0.0009 \\
+		\lambda_{2} &= 0.0009
+	\end{align*}
+	Итак, \textcolor{green}{зеленым} здесь обозначена реальная кривая, \textcolor{gray}{серым}~-- сгенерированные точки для восстановления кривой.
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale = 0.8]{Image/AT2_ELASTIC_V2_DATA.png}
+		\caption*{Dataset of polynom with Elastic}
+	\end{figure}
+	Теперь, посмотрим на восстановленную \textcolor{violet}{кривую} без регуляризации.
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale = 1]{Image/AT2_ELASTIC_V2_RECOVER.png}
+		\caption*{Recover of polynom with Elastic}
+	\end{figure}
+	Полученный результат:
+	\[
+		\mathtt{mse}_{\mathtt{Elastic}} = 1.3234947168628843
+	\]
 \end{document}
