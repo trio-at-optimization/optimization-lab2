@@ -1,41 +1,31 @@
 \documentclass[12pt, a4paper, oneside, final]{article}
 \usepackage[margin = 1in, bottom = 1in]{geometry}
 
+\pdfminorversion = 5 
+\pdfcompresslevel = 9
+\pdfobjcompresslevel = 2
+
 \usepackage[T2A]{fontenc}
 \usepackage[utf8]{inputenc}
 \usepackage[english, russian]{babel}
-\usepackage{xcolor, ulem, soulutf8, soul, fancyhdr, amsmath, amssymb, amsthm, svg, wrapfig, csvsimple, float, caption, subcaption}
+\usepackage{xcolor, ulem, soulutf8, soul, fancyhdr, amsmath, amssymb, amsthm, svg, wrapfig, csvsimple, float, caption, subcaption, titlesec, hyperref, multicol, listings, tocloft, longtable, skak, stmaryrd, color, minted}
 \usepackage[shortlabels]{enumitem}
-\usepackage{titlesec, hyperref, multicol, listings}
 \usepackage[most]{tcolorbox}
-\usepackage[makeroom]{cancel}
-\usepackage[most]{tcolorbox}
-\usepackage{tocloft, longtable, skak, stmaryrd, color}
 \usepackage[framemethod = tikz]{mdframed}
 
-\definecolor{codegreen}{rgb}{0,0.6,0}
-\definecolor{codegray}{rgb}{0.5,0.5,0.5}
-\definecolor{codepurple}{rgb}{0.58,0,0.82}
-\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
-\definecolor{blueish}{rgb}{0.96,0.96,1.0}
-\definecolor{grayblueish}{rgb}{0.97,0.97,0.98}
-\definecolor{transblue}{rgb}{0.9,0.9,0.97}
-\definecolor{transred}{rgb}{0.97,0.9,0.9}
-\definecolor{light-gray}{gray}{0.95}
+\definecolor{codegreen}{rgb}{0, 0.6, 0}
+\definecolor{codegray}{rgb}{0.5, 0.5, 0.5}
+\definecolor{codepurple}{rgb}{0.58, 0, 0.82}
+\definecolor{backcolour}{rgb}{0.95, 0.95, 0.92}
 
-\renewcommand{\figurename}{}
-\addto\captionsrussian{\renewcommand{\figurename}{}}
-\captionsetup[table]{labelformat = empty}
+\hypersetup{colorlinks, citecolor = pink, filecolor = pink, linkcolor = pink, urlcolor = pink}
 
-\hypersetup{
-	colorlinks,
-	citecolor = pink,
-	filecolor = pink,
-	linkcolor = pink,
-	urlcolor = pink
-}
+\everymath{\displaystyle}
+\binoppenalty = 10000
+\relpenalty = 10000
+\sloppy
 
-\newtcblisting{mylisting}{
+\newtcblisting{pseudocode}{
 	listing only,
 	breakable,
 	colback = backcolour,
@@ -65,38 +55,40 @@
 	}
 }
 
-\binoppenalty = 10000
-\relpenalty = 10000
-\sloppy
-
 \renewcommand*{\theenumi}{\thesection.\arabic{enumi}}
 \renewcommand*{\theenumii}{\alph{enumii}}
 \renewcommand*{\labelitemi}{\ensuremath{\triangleright}}
 
-\everymath{\displaystyle}
-
-\usepackage{minted}
-
-\begin{document}
-	\thispagestyle{empty}
-	\vspace*{0.5em}
+\def\cover{
 	\begin{center}
 		{Национальный исследовательский университет ИТМО\\Факультет информационных технологий и программирования\\Прикладная математика и информатика}\\[5.0em]
 		{\Huge \bfseries Методы оптимизации}\\[0.5em]
 		{\large Отчет по лабораторной работе №2}\\[0.5em]
 		\textcolor{gray}{\textlangle Собрано \today\textrangle}
 	\end{center}
+}
+
+\def\officials{
+	\begin{tabular}{ll}
+		\textbf{Работу выполнили:} \\ Бактурин Савелий Филиппович M32331 \\ Вереня Андрей Тарасович M32331 \\ Сотников Максим Владимирович M32331 \vspace*{1em} \\
+		\textbf{Преподаватель:} \\ Ким Станислав Евгеньевич
+	\end{tabular}
+}
+
+\def\firstpage{
+	\thispagestyle{empty}
+	\vspace*{0.5em}
+	\cover
 	\begingroup
-	\def\hd{\begin{tabular}{ll}
-			\textbf{Работу выполнили:} \\ Бактурин Савелий Филиппович M32331 \\ Вереня Андрей Тарасович M32331 \\ Сотников Максим Владимирович M32331 \vspace*{1em} \\
-			\textbf{Преподаватель:} \\ Ким Станислав Евгеньевич
-		\end{tabular}
-	}
 	\vspace*{30em}
-	\newlength{\hdwidth}
-	\settowidth{\hdwidth}{\hd}
-	\hfill\begin{minipage}{\hdwidth}\hd\end{minipage}
+	\newlength{\officialswidth}
+	\settowidth{\officialswidth}{\officials}
+	\hfill\begin{minipage}{\officialswidth}\officials\end{minipage}
 	\endgroup
+}
+
+\begin{document}
+	\firstpage
 	\newpage
 	\section*{Стохастический градиентный спуск}
 	\subsection*{Исследование с разными размерами батча}
@@ -125,7 +117,7 @@
 
 	Напишем идейный псевдокод.
 	Скажем, что $x_{i} = \{x^{0}_{i}, ~ x^{1}_{i}, ~ \ldots, x^{n - 1}_{i}\}$~-- координата в $n$-мерном пространстве $\mathbb{R}^{n}$, $y_{i} = \{y^{0}_{i}, ~ y^{1}_{i}, ~ \ldots, y^{n - 1}_{i}\}$~-- образ функции $f(x_{i})$.
-	\begin{mylisting}
+	\begin{pseudocode}
 function $\mathtt{S}(x, y, w)$:
 	return $\sum\limits_{i = 1}^{N}{(y_{i} - x_{i} \cdot w_{i})^{2}}$
 
@@ -143,7 +135,7 @@ function $\mathtt{stochastic\_descent}(x, y)$:
 		$w \gets w + \alpha \cdot T$
 		$\mathtt{next} \gets S(x, y, w)$
 	return $w$
-	\end{mylisting}
+	\end{pseudocode}
 	\paragraph{Пример с SGD, Minibatch, GD.}
 	Для понимания контекста, давайте увидим разницу между рассматриваемым градиентным спуском, Minibatch и общим, с которым мы уже давно знакомы. Возьмем в качестве функции $f(x, y) = x^{2} + y^{2}$, тогда его градиентом будет $\dfrac{\partial{f}}{\partial{\vec{x}}} = 2x + 2y$, также для GD мы выставим следующие параметры:
 	\begin{itemize}
@@ -169,7 +161,7 @@ function $\mathtt{stochastic\_descent}(x, y)$:
 
 	Тогда псевдокод от предыдущего рассмотренного варианта почти ничем не отличается.
 	Скажем также, что $x_{i} = \{x^{0}_{i}, ~ x^{1}_{i}, ~ \ldots, x^{n - 1}_{i}\}$~-- координата в $n$-мерном пространстве $\mathbb{R}^{n}$, $y_{i} = \{y^{0}_{i}, ~ y^{1}_{i}, ~ \ldots, y^{n - 1}_{i}\}$~-- образ функции $f(x_{i})$; значение $m$~-- выступает в роли мощности подмножества $M'$.
-	\begin{mylisting}
+	\begin{pseudocode}
 function $\mathtt{S}(x, y, w)$:
 	return $\sum\limits_{i = 1}^{N}{(y_{i} - x_{i} \cdot w_{i})^{2}}$
 	
@@ -187,13 +179,13 @@ function $\mathtt{stochastic\_descent}(x, y, m)$:
 			$w \gets w + \alpha \cdot T$
 		$\mathtt{next} \gets S(x, y, w)$
 	return $w$
-	\end{mylisting}
+	\end{pseudocode}
 	\subsubsection*{Градиентный спуск}
 	Наконец, самый общий случай и являющийся самым быстроходным среди двух рассмотренных ранее, благодаря тому, что мы учитываем все точки $M' \equiv M$.
 	Данный метод работает крайне медленно, но является одним из самых быстрых в сходимости к приближенной точке минимума.
 
 	Пусть $m$~-- есть мощность множества $M$, тогда идейным псевдокодом-решением задачи будет являться тот же код, что и для предыдущего варианта, то есть
-	\begin{mylisting}
+	\begin{pseudocode}
 function $\mathtt{S}(x, y, w)$:
 	return $\sum\limits_{i = 1}^{N}{(y_{i} - x_{i} \cdot w_{i})^{2}}$
 	
@@ -211,7 +203,7 @@ function $\mathtt{stochastic\_descent}(x, y, m)$:
 		$w \gets w + \alpha \cdot T$
 	$\mathtt{next} \gets S(x, y, w)$
 	return $w$
-	\end{mylisting}
+	\end{pseudocode}
 	\paragraph{Исследование Stohastic vs. Minibatch vs. GD.}
 	В качестве рассматриваемого пространства $\mathbb{R}^{2}$, где $2 = \texttt{количество\_весов} + \texttt{<<результирующий\_вес>>}$, для $X \subset \mathbb{N}$ мы возьмем множество $\{x\}_{i = 1}^{n}$, где $n \gets 500$ и $x_{i} < x_{i + 1}$.
 	Возьмем в качестве генерируемой прямой в пространстве одного из наиболее известного представителя фауны функции потерь, называемый \textit{MSE}.
